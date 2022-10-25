@@ -1,0 +1,78 @@
+Create procedure [dbo].[AddNewPatient]  
+(  
+   @name varchar (50),  
+   @Age int,  
+   @Address varchar (50),
+   @Doctor varchar (50),
+   @In_or_Out bit,
+   @Deleted bit
+)  
+as  
+begin  
+   Insert into Patients values(@name,@Address,@Age,@In_or_Out,@Deleted,@Doctor)  
+End  
+
+
+
+Create procedure [dbo].[DeletePatient]  
+(  
+   @Id int
+)
+as  
+begin  
+   Update Patients  
+   set [Deleted]=1
+   where Id=@Id  
+End 
+
+
+
+Create Procedure [dbo].[GetPatients]  
+(
+   @PageNumber int,
+   @RowsOfPage int,
+   @search varchar (50)
+
+)
+as  
+begin  
+   SELECT Id,Name,Address,Age,In_or_Out,Doctor FROM Patients WHERE ([Deleted]=0) AND ((Name LIKE '%'+@search+'%') OR (Address LIKE '%'+@search+'%') OR (Age LIKE '%'+@search+'%') )  ORDER BY Id
+OFFSET @PageNumber ROWS
+FETCH NEXT @RowsOfPage ROWS ONLY
+End
+
+
+
+Create Procedure [dbo].[GetSingleRecord]  
+(
+    @Id int
+)
+as  
+begin  
+   SELECT Id,Name,Address,Age,In_or_Out,Doctor FROM Patients WHERE Id=@Id AND Deleted=0
+End
+
+
+
+
+Create procedure [dbo].[UpdatePatient]  
+(  
+   @Id int,  
+   @name varchar (50),  
+   @age int,
+   @Address varchar (50) ,
+   @In_or_Out bit,
+   @Deleted bit,
+   @Doctor varchar (50)
+)
+as  
+begin  
+   Update Patients  
+   set Name=@Name,  
+   Address=@Address,
+   Age=@Age,
+   In_or_Out=@In_or_Out,
+   Deleted=@Deleted,
+   Doctor=@Doctor
+   where Id=@Id  
+End  

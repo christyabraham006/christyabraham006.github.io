@@ -1,0 +1,120 @@
+﻿
+<div class="container">
+    <h1 style="margin-top:100px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">ABC Hospital</h1>
+    <h5 class="display-6">Patient Record System</h5>
+    <p>
+        <a class="btn btn-success" href="/Patient/Create/">Create New</a>
+    </p>
+    @if (TempData["error"] != null)
+    {
+        @Html.Raw(TempData["error"]);
+    }
+    @if (TempData["msg"] != null)
+    {
+        @Html.Raw(TempData["msg"]);
+    }
+    <div>
+
+        <table id="myTable" class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Name</th>
+
+                    <th>Address</th>
+
+                    <th>Age</th>
+
+                    <th>Patient In</th>
+
+                    <th>Consultant Doctor</th>
+                    <th></th>
+
+                </tr>
+
+            </thead>
+
+        </table>
+
+    </div>
+</div>
+
+
+
+<link href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css" rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet">
+
+
+
+
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#myTable').DataTable(
+
+                {
+                    "processing": true,
+                    "serverSide": true,
+                    "filter": true,
+                    "bInfo": false,
+                    "bSort": false,
+                    "ajax": {
+                        "url": "/Patient/PatientData",
+                        "type": "POST",
+                        "datatype": "json"
+
+                    },
+
+                    "columns": [
+
+                        {
+                            "data": "Name",
+                            "render": function (data, type, full, meta) {
+                                if (full.In_or_Out == false)
+                                    return ('<p style="color:red">' + data + '</p>');
+                                else return data;
+                            }
+                        },
+
+                        { "data": "Address" },
+
+                        { "data": "Age" },
+
+                        {
+                            "data": "In_or_Out",
+                            "render": function (data, type, full, meta) {
+                                if (data == true)
+                                    return "IN";
+                                else return '<p style="color:red">OUT</p>';
+                            }
+                        },
+
+                        { "data": "Doctor" },
+
+                        {
+                            "data": null,
+                            "render": function (data, type, full, meta) {
+                                return ('<a class="btn btn-info" href="/Patient/Edit/' + full.PatientId + '">Edit</a> || <a class="btn btn-danger" href="/Patient/Delete/' + full.PatientId + '">Delete</a>');
+                            }
+                        },
+
+                    ]
+
+                });
+
+        });
+
+    </script>
+}
+
+
+
+
